@@ -1,3 +1,5 @@
 *.o
 pmu
+pmu.sh
 *~
+*.json

@@ -47,16 +47,38 @@ bool JsonParser::parse(const std::string& path)
 	for(int i = 0; i < urls.size(); ++i) {
 		std::string link = urls[i].get("url", "null").asString();
 		std::string country = urls[i].get("country", "null").asString();
-		int score = urls[i].get("score", 0).asInt();
+		std::string protocol = urls[i].get("protocol", "null").asString();
+		double score = urls[i].get("score", 0.0).asDouble();
+		double completion = urls[i].get("completion_pct", 0.0).asDouble();
 		
-		this->urls.push_back(Mirror(link, country, score));
+		addProtocol(protocol);
+		this->urls.push_back(Mirror(protocol, link, completion, country, score));
 	}
 	return true;
+}
+
+void JsonParser::addProtocol(const std::string& protocol)
+{
+	bool found = false;
+	
+	for(int i = 0; i < mProtocols.size(); i++) {
+		if(mProtocols[i] == protocol) {
+			found = true;
+			break;
+		}
+	}
+	if(!found)
+		mProtocols.push_back(protocol);
 }
 
 const std::string& JsonParser::getVersion(void) const
 {
 	return version;
+}
+
+const std::vector<std::string>& JsonParser::getProtocols(void) const
+{
+	return mProtocols;
 }
 
 const std::string& JsonParser::getLastCheck(void) const
