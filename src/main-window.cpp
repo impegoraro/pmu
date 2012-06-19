@@ -20,6 +20,7 @@ public:
     	add(mColSelected);
     	add(mColUrl);
     	add(mColCompletion);
+    	add(mColCountryCode);
     	add(mColCountry);
     	add(mColScore);
     }
@@ -27,6 +28,7 @@ public:
 	Gtk::TreeModelColumn<bool> mColSelected;
 	Gtk::TreeModelColumn<ustring> mColUrl;
 	Gtk::TreeModelColumn<int> mColCompletion;
+	Gtk::TreeModelColumn< Glib::RefPtr<Gdk::Pixbuf> > mColCountryCode;
 	Gtk::TreeModelColumn<ustring> mColCountry;
 	Gtk::TreeModelColumn<double> mColScore;
 };
@@ -62,7 +64,9 @@ Pmu::MainWindow::MainWindow(ustring &title, const char *file) :
 	col->set_resizable();
 	col->set_clickable();
 	col->set_sort_column(cols.mColCompletion);
-	col = treeUrls->get_column(treeUrls->append_column("Country", cols.mColCountry) - 1);
+	col = treeUrls->get_column(treeUrls->append_column("", cols.mColCountryCode) - 1);
+	col->set_min_width(30);
+	col = treeUrls->get_column(treeUrls->append_column("", cols.mColCountry) - 1);
 	col->set_min_width(60);
 	col->set_clickable();
 	col->set_resizable();
@@ -94,8 +98,9 @@ Pmu::MainWindow::MainWindow(ustring &title, const char *file) :
 		for(int i=0; i < tmp.getUrls().size(); i++) { 
 			std::string url = tmp.getUrls()[i].getUrl();
 			std::string country = tmp.getUrls()[i].getCountry();
+			std::string countryCode = tmp.getUrls()[i].getCountryCode();
 			
-			insert(url, (int) (tmp.getUrls()[i].getCompletion() * 100), country, tmp.getUrls()[i].getScore());
+			insert(url, (int) (tmp.getUrls()[i].getCompletion() * 100), countryCode,country, tmp.getUrls()[i].getScore());
 		}
 	} else 
 		std::cout<< "could not load the file"<< std::endl;
@@ -103,7 +108,7 @@ Pmu::MainWindow::MainWindow(ustring &title, const char *file) :
 	mwin->show_all();
 }
 
-void Pmu::MainWindow::insert(const std::string& url, int completion,const std::string& country, double score)
+void Pmu::MainWindow::insert(const std::string& url, int completion, const std::string& countryCode,const std::string& country, double score)
 {
 	TreeUrlsCols m;
 	RefPtr<ListStore> list = RefPtr<ListStore>::cast_dynamic(treeUrls->get_model());
@@ -113,6 +118,7 @@ void Pmu::MainWindow::insert(const std::string& url, int completion,const std::s
 	row[m.mColSelected] = false;
 	row[m.mColUrl] = url;
 	row[m.mColCompletion] = completion;
+	row[m.mColCountryCode] = Image(Gtk::MISSING_IMAGE, IconSize(30)).get_pixbuf();
 	row[m.mColCountry] = country;
 	row[m.mColScore] = score;
 }

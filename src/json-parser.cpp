@@ -47,12 +47,15 @@ bool JsonParser::parse(const std::string& path)
 	for(int i = 0; i < urls.size(); ++i) {
 		std::string link = urls[i].get("url", "null").asString();
 		std::string country = urls[i].get("country", "null").asString();
+		std::string countryCode = urls[i].get("country_code", "null").asString();
 		std::string protocol = urls[i].get("protocol", "null").asString();
 		double score = urls[i].get("score", 0.0).asDouble();
 		double completion = urls[i].get("completion_pct", 0.0).asDouble();
+		Mirror m(protocol, link, completion, country, score);
 		
+		m.setCountryCode(countryCode);
 		addProtocol(protocol);
-		this->urls.push_back(Mirror(protocol, link, completion, country, score));
+		this->urls.push_back(m);
 	}
 	return true;
 }

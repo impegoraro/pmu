@@ -30,7 +30,7 @@ namespace Pmu
 			
 			void btnClose_on_click();
 			void btnApply_on_click();
-			void insert(const std::string& url, int completion, const std::string& country, double score);
+			void insert(const std::string& url, int completion, const std::string& countryCode,const std::string& country, double score);
 			
 	};
 };

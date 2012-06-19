@@ -30,6 +30,11 @@ public:
 	double getDurationStddev(void) const;
 	double getDurationAverage(void) const;
 	double getScore(void) const;
+	
+	void setCountryCode(const std::string &code)
+	{
+		mCountryCode = code;
+	}
 };
 
 
