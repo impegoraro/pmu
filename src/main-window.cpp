@@ -3,6 +3,7 @@
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/liststore.h>
+#include <gtkmm/stock.h>
 #include <curl/curl.h>
 #include <unistd.h>
 
@@ -125,7 +126,8 @@ void Pmu::MainWindow::insert(const std::string& url, int completion, const std::
 	row[m.mColSelected] = false;
 	row[m.mColUrl] = url;
 	row[m.mColCompletion] = completion;
-	row[m.mColCountryCode] = Image(Gtk::MISSING_IMAGE, IconSize(30)).get_pixbuf();
+//	row[m.mColCountryCode] = Image(Gtk::Stock::MISSING_IMAGE, IconSize(30)).get_pixbuf();
+	row[m.mColCountryCode] = Gdk::Pixbuf::create_from_file("/usr/share/icons/gnome/32x32/status/gtk-missing-image.png");
 	row[m.mColCountry] = country;
 	row[m.mColScore] = score;
 }
