@@ -84,7 +84,7 @@ Pmu::MainWindow::MainWindow(ustring &title, const char *file) :
 	btnClose->signal_clicked().connect(sigc::mem_fun(*this, &Pmu::MainWindow::btnClose_on_click));
 	
 	/* Testing */
-	if(tmp.parse("tmp.json")) {
+	if(tmp.parse(filePath)) {
 		ustring ver(ustring("" + tmp.getVersion())), lcheck(ustring(tmp.getLastCheck()));
 		
 		lblVersion->set_text(ver);
