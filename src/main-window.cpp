@@ -169,6 +169,8 @@ int Pmu::MainWindow::downloadFile() {
 		if (curlGetResult == CURLE_OK) {
 			remove(filePath.c_str());
 			rename(tmpDownloadFile.c_str(), filePath.c_str());
+
+			returnValue = OK;
 		}
 	}
 
