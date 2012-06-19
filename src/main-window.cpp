@@ -3,7 +3,10 @@
 #include <gtkmm/main.h>
 #include <gtkmm/builder.h>
 #include <gtkmm/liststore.h>
+#include <curl/curl.h>
+#include <unistd.h>
 
+#include "error-codes.h"
 #include "main-window.h"
 #include "json-parser.h"
 
@@ -35,6 +38,9 @@ public:
 Pmu::MainWindow::MainWindow(ustring &title, const char *file) : 
 	default_width(400), default_height(550), uiFile(file)
 {
+
+	if (downloadFile() == OK) {
+
 	TreeUrlsCols cols;
 	RefPtr<Builder> builder = Builder::create_from_file(uiFile);
 	RefPtr<ListStore> pList = ListStore::create(cols);
@@ -101,6 +107,7 @@ Pmu::MainWindow::MainWindow(ustring &title, const char *file) :
 		std::cout<< "could not load the file"<< std::endl;
 	/*End of testing */
 	mwin->show_all();
+	}
 }
 
 void Pmu::MainWindow::insert(const std::string& url, int completion,const std::string& country, double score)
@@ -123,6 +130,55 @@ void Pmu::MainWindow::btnClose_on_click()
 	Gtk::Main::quit();
 }
 
+int Pmu::MainWindow::downloadFile() {
+
+	int returnValue = NO_FILE;
+
+	CURL *curl;
+	CURLcode curlGetResult;
+
+	string tmpDownloadFile ("/tmp/pmuTmp.json");
+
+	filePath = new std::string(JSON_DIRECTORY);
+	filePath = filePath.append("/").append(JSON_FILE);
+
+	FILE *jsonFile;
+
+	curl_global_init(CURL_GLOBAL_ALL);
+
+	/* Initialize curl */
+	curl = curl_easy_init();
+
+	/* Set the download URL */
+	curl_easy_setopt(curl, CURLOPT_URL, JSON_URL);
+	/* Set no progress display */
+	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+
+	returnValue = access(filePath.c_str(), F_OK);
+
+	jsonFile = fopen(tmpDownloadFile.c_str() , "wb");
+
+	if (jsonFile != NULL) {
+
+		/* DownloadFile from web */
+		curl_easy_setopt(curl, CURLOPT_FILE, jsonFile);
+		curlGetResult = curl_easy_perform(curl);
+
+		fclose(jsonFile);
+
+		if (curlGetResult == CURLE_OK) {
+			remove(filePath.c_str());
+			rename(tmpDownloadFile.c_str(), filePath.c_str());
+		}
+	}
+
+	curl_easy_cleanup(curl);
+
+	cout << "Result of CURL getting file:  " << curlGetResult << endl;
+
+	return returnValue;
+
+}
 
 int main(int argc, char** argv)
 {
@@ -137,8 +193,11 @@ int main(int argc, char** argv)
 	}
 	else
 		pmu = new Pmu::MainWindow(title);
-	
+
 	kit.run(*pmu->mwin);
-	
+
 	delete pmu;
 }
+
+
+
