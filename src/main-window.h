@@ -8,6 +8,10 @@
 
 #define GLADE_FILE "/home/ilan/Dropbox/dev/pmu/pmu.glade"
 
+#define JSON_URL "http://www.archlinux.org/mirrors/status/json/"
+#define JSON_DIRECTORY "/tmp"
+#define JSON_FILE "pmu.json"
+
 namespace Pmu
 {
 	class MainWindow
@@ -19,6 +23,8 @@ namespace Pmu
 			const int default_width;
 			const int default_height;
 			
+			std::string filePath;
+
 			std::string uiFile;
 			
 			Gtk::ComboBoxText *comboProtocols;
@@ -32,6 +38,8 @@ namespace Pmu
 			void btnApply_on_click();
 			void insert(const std::string& url, int completion, const std::string& countryCode,const std::string& country, double score);
 			
+			int downloadFile();
+
 	};
 };
 
