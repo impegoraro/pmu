@@ -139,7 +139,7 @@ int Pmu::MainWindow::downloadFile() {
 
 	string tmpDownloadFile ("/tmp/pmuTmp.json");
 
-	filePath = new std::string(JSON_DIRECTORY);
+	filePath = JSON_DIRECTORY;
 	filePath = filePath.append("/").append(JSON_FILE);
 
 	FILE *jsonFile;

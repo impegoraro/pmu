@@ -3,3 +3,5 @@ pmu
 pmu.sh
 *~
 *.json
+.cproject
+.project
